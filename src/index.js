@@ -106,6 +106,7 @@ export default class Alert {
       'danger',
       'light',
       'dark',
+      'thingy-info'
     ];
   }
 
@@ -184,20 +185,27 @@ export default class Alert {
       this.CSS.wrapperForType(this.data.type),
       this.CSS.wrapperForAlignType(this.data.align),
     ];
-
+  
     this.container = this._make('div', containerClasses);
-
-    const messageEl = this._make('div', [this.CSS.message], {
-      contentEditable: !this.readOnly,
-      innerHTML: this.data.message,
-    });
-
-    messageEl.dataset.placeholder = this.messagePlaceholder;
-
-    this.container.appendChild(messageEl);
-
+  
+    // Check if in read-only mode and the type is 'thingy-info'
+    if (this.readOnly && this.data.type === 'thingy-info') {
+      // Optionally, you can add a placeholder or leave it empty
+      this.container.style.display = 'none';
+    } else {
+      const messageEl = this._make('div', [this.CSS.message], {
+        contentEditable: !this.readOnly,
+        innerHTML: this.data.message,
+      });
+  
+      messageEl.dataset.placeholder = this.messagePlaceholder;
+  
+      this.container.appendChild(messageEl);
+    }
+  
     return this.container;
   }
+  
 
   /**
    * Create Block's settings block
@@ -205,17 +213,20 @@ export default class Alert {
    * @returns {array}
    */
   renderSettings() {
-    const alertTypes = Alert.ALERT_TYPES.map((type) => ({
-      icon: SettingsIcon,
-      name: `alert-${type}`,
-      label: this._getFormattedName(type),
-      toggle: 'alert',
-      isActive: this.data.type === type,
-      onActivate: () => {
-        this._changeAlertType(type);
-      },
-    }));
-
+    // Filter out 'thingy-info' for all modes
+    const alertTypes = Alert.ALERT_TYPES
+      .filter(type => type !== 'thingy-info')
+      .map((type) => ({
+        icon: SettingsIcon,
+        name: `alert-${type}`,
+        label: this._getFormattedName(type),
+        toggle: 'alert',
+        isActive: this.data.type === type,
+        onActivate: () => {
+          this._changeAlertType(type);
+        },
+      }));
+  
     const alignTypes = Alert.ALIGN_TYPES.map((align) => ({
       icon:
         align == 'left'
@@ -233,8 +244,10 @@ export default class Alert {
         this._changeAlignType(align);
       },
     }));
+    
     return [...alertTypes, ...alignTypes];
   }
+  
 
   /**
    * Helper for formatting Alert Type / Align Type

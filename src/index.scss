@@ -7,7 +7,9 @@ $alert-themes:
   'warning'   #fffaf0 #ed8936 #c05621,
   'danger'    #fff5f5 #fc8181 #c53030,
   'light'     #fff    #edf2f7 #1a202c,
-  'dark'      #2d3748 #1a202c #d3d3d3;
+  'dark'      #2d3748 #1a202c #d3d3d3,
+  'thingy-info'      #e6fdff #4cd4ce #00727c;
+
 
 @mixin alert-variant($backgorund-color, $border-color, $content-color) {
   background-color: $backgorund-color;
